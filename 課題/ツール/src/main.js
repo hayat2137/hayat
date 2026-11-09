@@ -30,10 +30,29 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+// アップロードできる画像の条件（Supabase 側のバケット設定 supabase-limits.sql と合わせること）
+const MAX_BYTES = 5 * 1024 * 1024 // 5MB 以上は弾く
+const ALLOWED_TYPES = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+}
+
+// 条件に合わなければ理由を返す（合えば null）
+function validate(file) {
+  if (!ALLOWED_TYPES[file.type]) {
+    return `対応していない形式です（JPEG・PNG・WEBP のみ）`
+  }
+  if (file.size >= MAX_BYTES) {
+    return `サイズが大きすぎます（${(file.size / 1024 / 1024).toFixed(1)}MB。5MB 未満にしてください）`
+  }
+  return null
+}
+
 // 日本語や空白を含むファイル名は Storage でエラーになることがあるため、ランダムな名前に置き換える
+// 拡張子はファイル名ではなく実際の形式から付ける
 function makePath(file) {
-  const ext = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : 'bin'
-  return `${crypto.randomUUID()}.${ext}`
+  return `${crypto.randomUUID()}.${ALLOWED_TYPES[file.type]}`
 }
 
 function publicUrlOf(path) {
@@ -48,21 +67,25 @@ async function copy(text, button) {
 }
 
 // ---------- アップロード ----------
-async function uploadFiles(files) {
-  const images = [...files].filter((f) => f.type.startsWith('image/'))
-  if (images.length === 0) {
-    statusEl.textContent = '画像ファイルを選んでください。'
-    return
-  }
+async function uploadFiles(selected) {
+  if (selected.length === 0) return
 
   resultList.innerHTML = ''
   resultBox.hidden = false
 
-  for (const file of images) {
+  for (const file of selected) {
     const li = document.createElement('li')
-    li.textContent = `${file.name} をアップロード中…`
     resultList.appendChild(li)
 
+    // 形式・サイズのチェック（条件外はアップロードしない）
+    const reason = validate(file)
+    if (reason) {
+      li.textContent = `${file.name}: ${reason}`
+      li.className = 'error'
+      continue
+    }
+
+    li.textContent = `${file.name} をアップロード中…`
     const path = makePath(file)
     const { error } = await supabase.storage
       .from(BUCKET)
@@ -86,9 +109,11 @@ async function uploadFiles(files) {
     btn.textContent = 'URLをコピー'
     btn.addEventListener('click', () => copy(url, btn))
     li.append(`${file.name}: `, link, ' ', btn)
-  }
 
-  loadList()
+    // 成功したらすぐに一覧の先頭へ追加する（全件の再取得を待たない）
+    files = [{ id: path, name: path }, ...files]
+    renderGallery()
+  }
 }
 
 // ---------- 一覧表示 ----------
