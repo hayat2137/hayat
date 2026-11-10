@@ -43,6 +43,21 @@ h2 {
   transition: background 0.15s, border-color 0.15s;
 }
 
+.drop[hidden],
+.locked[hidden] {
+  display: none;
+}
+
+.locked {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--card);
+  margin: 0;
+}
+
 .drop.over,
 .drop:hover {
   border-color: var(--accent);

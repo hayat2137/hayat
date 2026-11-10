@@ -31,8 +31,11 @@
         .env に VITE_SUPABASE_URL と VITE_SUPABASE_ANON_KEY を設定してください（.env.example を参照）。
       </p>
 
-      <!-- ドロップエリア（クリックでファイル選択もできる） -->
-      <label id="drop" class="drop">
+      <!-- ログインしていないときの案内 -->
+      <p id="upload-locked" class="locked">画像をアップロードするには、右上の「管理者ログイン」からログインしてください。</p>
+
+      <!-- ドロップエリア（ログイン中だけ表示。クリックでファイル選択もできる） -->
+      <label id="drop" class="drop" hidden>
         <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
         <span>
           ここに画像をドラッグ＆ドロップ<br /><small>またはクリックして選択（JPEG・PNG・WEBP／5MB 未満）</small>

@@ -23,16 +23,17 @@ npm run dev
 
 画面でチェックしたうえで、Supabase 側でも同じ制限をかける（SQL Editor で `supabase-limits.sql` を実行）。
 
-## 画像の削除（管理者だけ）
+## アップロードと削除（ログインした人だけ）
 
-ログインした人だけが画像を削除できる。新規登録の画面はなく、アカウントは管理画面で作る。
+画像のアップロードと削除は、ログインした人だけができる。一覧の表示と画像の閲覧は誰でもできる。
+新規登録の画面はなく、アカウントは管理画面で作る。
 
 1. Supabase ダッシュボード → Authentication → Sign In / Providers で **Allow new users to sign up をオフ** にする
-2. Authentication → Users → Add user → Create new user で、自分のメールアドレスとパスワードを登録する（Auto Confirm User にチェック）
-3. SQL Editor で `supabase-delete-policy.sql` を実行する
-4. ツール右上の「管理者ログイン」からログインすると、各画像に「削除」ボタンが出る
+2. Authentication → Users → Add user → Create new user で、使う人のメールアドレスとパスワードを登録する（Auto Confirm User にチェック）
+3. SQL Editor で `supabase-delete-policy.sql` と `supabase-upload-auth-only.sql` を実行する
+4. ツール右上の「管理者ログイン」からログインすると、アップロード欄と各画像の「削除」ボタンが出る
 
 ## 注意
 
-- 今の設定では **誰でもアップロードできる**。URL を他人に教えるときは、容量を使われたり、不適切な画像を上げられたりする可能性があることに注意する。
-- `.env` は Git に上げない（hayat の `.gitignore` で除外済み）。
+- 一覧と画像の URL は誰でも見られる。見られて困る画像は上げない。
+- `.env` は Git に上げない（このフォルダの `.gitignore` で除外済み）。

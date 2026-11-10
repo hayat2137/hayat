@@ -1,5 +1,6 @@
 -- Supabase ダッシュボード → SQL Editor に貼り付けて実行する
 -- 「images」という公開バケットを作り、誰でも（ログインなしで）アップロード・一覧取得できるようにする
+-- ※ アップロードをログインした人だけに絞る場合は、続けて supabase-upload-auth-only.sql を実行する
 
 -- 1. 公開バケットを作成（ダッシュボードで作成済みなら不要）
 insert into storage.buckets (id, name, public)

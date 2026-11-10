@@ -18,6 +18,7 @@ const loggedInBox = document.getElementById('logged-in')
 const userEmailEl = document.getElementById('user-email')
 const logoutBtn = document.getElementById('logout')
 const authError = document.getElementById('auth-error')
+const uploadLocked = document.getElementById('upload-locked')
 
 // 現在のログイン状態と、取得済みのファイル一覧
 let session = null
@@ -69,6 +70,11 @@ async function copy(text, button) {
 // ---------- アップロード ----------
 async function uploadFiles(selected) {
   if (selected.length === 0) return
+  // アップロードはログイン中だけ（実際の可否は Supabase 側のポリシーで判定される）
+  if (!session) {
+    alert('画像をアップロードするにはログインしてください。')
+    return
+  }
 
   resultList.innerHTML = ''
   resultBox.hidden = false
@@ -194,6 +200,10 @@ function renderAuth() {
   showLoginBtn.hidden = loggedIn || !loginForm.hidden
   if (loggedIn) loginForm.hidden = true
   userEmailEl.textContent = loggedIn ? session.user.email : ''
+  // アップロード欄はログイン中だけ出す
+  drop.hidden = !loggedIn
+  uploadLocked.hidden = loggedIn
+  if (!loggedIn) resultBox.hidden = true
 }
 
 showLoginBtn.addEventListener('click', () => {
