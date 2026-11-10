@@ -6,5 +6,16 @@
 # 依存パッケージ
 node_modules/
 
-# ビルド成果物
+# ビルド成果物（Next.js）
+.next/
+out/
 dist/
+build/
+
+# TypeScript・Vercel が自動で作るファイル
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+
+# ログ
+npm-debug.log*

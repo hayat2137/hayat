@@ -1,7 +1,14 @@
 # 画像アップローダー
 
 ドラッグ＆ドロップで画像を Supabase Storage にアップロードし、公開 URL を表示するツール。
-アップロード済みの画像はサムネイルで一覧表示する（Vite + supabase-js）。
+アップロード済みの画像はサムネイルで一覧表示する（Next.js + TypeScript + Tailwind CSS + supabase-js）。
+
+## ファイル構成
+
+- `src/app/` … ページ（`page.tsx`）・全体のレイアウト・色の設定（`globals.css`）
+- `src/components/` … 画面の部品（`ImageUploader` が本体、`AuthBar` がログイン、`Gallery` が一覧）
+- `src/lib/` … Supabase への接続（`supabase.ts`）とアップロード条件（`upload-rules.ts`）
+- `supabase-*.sql` … Supabase の SQL Editor で実行する設定
 
 ## セットアップ
 
@@ -14,7 +21,13 @@ npm install
 npm run dev
 ```
 
-ブラウザで http://localhost:5173 を開く。
+ブラウザで http://localhost:3000 を開く。
+
+## Vercel で公開する場合
+
+- Root Directory：`課題/ツール`
+- Framework Preset：**Next.js**
+- Environment Variables：`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`NEXT_PUBLIC_SUPABASE_BUCKET`（`.env` と同じ値）
 
 ## アップロードできる画像
 
