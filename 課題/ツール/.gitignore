@@ -1,0 +1,10 @@
+# 接続情報（Git に上げない）
+.env
+.env.*
+!.env.example
+
+# 依存パッケージ
+node_modules/
+
+# ビルド成果物
+dist/
